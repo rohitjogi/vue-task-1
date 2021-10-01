@@ -1,32 +1,36 @@
 <template>
 	<Wrapper>
 		<h1>Artists page</h1>
-		<form id="artistForm">
-			<label for="aid">Aid : </label>
-			<input
-				:disabled="artist.data.operation == 'edit'"
-				id="aid"
-				v-model="artist.data.aid"
-				type="text"
-				name="aid"
-			/>
-			<br />
-			<label for="name">Name : </label>
-			<input
-				id="name"
-				v-model="artist.data.name"
-				type="text"
-				name="name"
-			/>
-			<br />
-			<button v-on:click.prevent="onSubmit">
-				{{
-					artist.data.operation === "edit"
-						? "save"
-						: "add" | capitalize
-				}}
-			</button>
-		</form>
+		<div class="formContainer">
+			<form id="artistForm ">
+				<label for="aid">Aid : </label>
+				<br />
+				<input
+					:disabled="artist.data.operation == 'edit'"
+					id="aid"
+					v-model="artist.data.aid"
+					type="text"
+					name="aid"
+				/>
+				<br />
+				<label for="name">Name : </label>
+				<br />
+				<input
+					id="name"
+					v-model="artist.data.name"
+					type="text"
+					name="name"
+				/>
+				<br />
+				<button class="formSubmit" v-on:click.prevent="onSubmit">
+					{{
+						artist.data.operation === "edit"
+							? "save"
+							: "add" | capitalize
+					}}
+				</button>
+			</form>
+		</div>
 		<DataTable :data="artists"></DataTable>
 	</Wrapper>
 </template>
@@ -66,10 +70,4 @@ export default {
 };
 </script>
 
-<style>
-.artistForm {
-	align-items: center;
-	flex-direction: column;
-	display: flex;
-}
-</style>
+<style></style>

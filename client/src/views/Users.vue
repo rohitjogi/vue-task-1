@@ -1,25 +1,36 @@
 <template>
 	<Wrapper>
 		<h1>Users Details</h1>
-		<form id="userForm">
-			<label for="uid">Uid : </label>
-			<input
-				:disabled="user.data.operation == 'edit'"
-				id="uid"
-				v-model="user.data.uid"
-				type="text"
-				name="uid"
-			/>
-			<br />
-			<label for="name">Name : </label>
-			<input id="name" v-model="user.data.name" type="text" name="name" />
-			<br />
-			<button v-on:click.prevent="onSubmit">
-				{{
-					user.data.operation === "edit" ? "save" : "add" | capitalize
-				}}
-			</button>
-		</form>
+		<div class="formContainer">
+			<form class="userForm form">
+				<label for="uid">Uid : </label>
+				<br />
+				<input
+					:disabled="user.data.operation == 'edit'"
+					id="uid"
+					v-model="user.data.uid"
+					type="text"
+					name="uid"
+				/>
+				<br />
+				<label for="name">Name : </label>
+				<br />
+				<input
+					id="name"
+					v-model="user.data.name"
+					type="text"
+					name="name"
+				/>
+				<br />
+				<button class="formSubmit" v-on:click.prevent="onSubmit">
+					{{
+						user.data.operation === "edit"
+							? "save"
+							: "add" | capitalize
+					}}
+				</button>
+			</form>
+		</div>
 		<DataTable :data="users"></DataTable>
 	</Wrapper>
 </template>
@@ -36,13 +47,6 @@ export default {
 	computed: {
 		...mapGetters(["users"]),
 		...mapState(["user"]),
-		// isInputDisabled: function() {
-		// 	const { operation } = this.user.data;
-		// 	return {
-		// 		uid: operation == "edit" || operation == "delete",
-		// 		name: operation == "delete",
-		// 	};
-		// },
 	},
 	mounted() {
 		this.$store.dispatch(FETCH_USERS);
@@ -67,10 +71,4 @@ export default {
 };
 </script>
 
-<style>
-.userForm {
-	align-items: center;
-	flex-direction: column;
-	display: flex;
-}
-</style>
+<style scoped></style>

@@ -15,8 +15,8 @@ const ApiService = {
 		});
 	},
 
-	get(resource, slug = "") {
-		return Vue.axios.get(`${resource}/${slug}`).catch((error) => {
+	get(resource) {
+		return Vue.axios.get(`${resource}`).catch((error) => {
 			throw new Error(`[RWV] ApiService ${error}`);
 		});
 	},
@@ -45,13 +45,47 @@ const ApiService = {
 export default ApiService;
 
 export const usersService = {
-	get() {
-		return ApiService.get("users");
+	get(queryParams = []) {
+		let query = "users";
+		const queryLen = queryParams.length;
+
+		if (queryLen) query += "?";
+
+		queryParams.forEach((val, index) => {
+			if (queryLen == index + 1) {
+				query += "q=" + val;
+			} else {
+				query += "q=" + val + "&";
+			}
+		});
+
+		return ApiService.get(query);
+	},
+	updateAlbum(uid, alid, payload) {
+		return ApiService.put(`users/${uid}/albums/${alid}`, payload);
+	},
+	updateAlbums(id, payload) {
+		return ApiService.put(`users/${id}/albums`, payload);
+	},
+	update(id, payload) {
+		return ApiService.put(`users/${id}`, payload);
 	},
 };
 
 export const artistsService = {
 	get() {
 		return ApiService.get("artists");
+	},
+	getSingle(id) {
+		return ApiService.get(`artists/${id}`);
+	},
+};
+
+export const AlbumsService = {
+	get() {
+		return ApiService.get("albums");
+	},
+	create(payload) {
+		return ApiService.post(`albums`, payload);
 	},
 };

@@ -22,17 +22,20 @@ export default {
 	justify-content: flex-start;
 	align-content: stretch;
 	align-items: flex-start;
+	gap: 15px;
+	height: 90vh;
 }
 
 .flex-item:nth-child(1) {
 	order: 0;
 	flex: 0 1 auto;
-	align-self: stretch;
+	align-self: center;
+	text-align: left;
 }
 
 .flex-item:nth-child(2) {
 	order: 0;
 	flex: 1 1 auto;
-	align-self: stretch;
+	align-self: center;
 }
 </style>

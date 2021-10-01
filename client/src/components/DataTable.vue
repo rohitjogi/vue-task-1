@@ -1,9 +1,10 @@
 <template>
-	<div>
+	<wrapper center="true">
 		<table class="dataTable">
 			<tr>
 				<th>{{ tableHeader }}</th>
 				<th>Name</th>
+				<th v-if="currentRouteName === 'albums'">Artist Name</th>
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
@@ -11,6 +12,9 @@
 			<tr v-for="item in items" :key="item.id">
 				<td>{{ item.id }}</td>
 				<td>{{ item.name }}</td>
+				<td v-if="currentRouteName === 'albums'">
+					{{ item.artist.name }}
+				</td>
 				<td>
 					<font-awesome-icon
 						@click.prevent="selectItem(item.id)"
@@ -27,14 +31,26 @@
 				</td>
 			</tr>
 		</table>
-	</div>
+	</wrapper>
 </template>
 
 <script>
-import { DELETE_USER, SELECT_ARTIST, SELECT_USER } from "../store/actions.type";
-import { ARTISTS_ROUTE, EDIT, USERS_ROUTE } from "../constants/index";
+import {
+	DELETE_ARTIST,
+	DELETE_USER,
+	SELECT_ARTIST,
+	SELECT_USER,
+} from "../store/actions.type";
+import {
+	ALBUMS_ROUTE,
+	ARTISTS_ROUTE,
+	EDIT,
+	USERS_ROUTE,
+} from "../constants/index";
+import Wrapper from "./Wrapper.vue";
 // TODO: find better solution for resuseability across diff routes
 export default {
+	components: { Wrapper },
 	name: "DataTable",
 	props: ["data"],
 	computed: {
@@ -42,7 +58,8 @@ export default {
 			//update data for resuseability
 			const cleansedData = this.data.map((i) => {
 				return {
-					id: i.uid || i.aid,
+					...i,
+					id: i.uid || i.aid || i.alid,
 					name: i.name,
 				};
 			});
@@ -58,6 +75,8 @@ export default {
 					? "Uid"
 					: this.currentRouteName === ARTISTS_ROUTE
 					? "Aid"
+					: this.currentRouteName === ALBUMS_ROUTE
+					? "Alid"
 					: "";
 
 			return text;
@@ -65,27 +84,40 @@ export default {
 	},
 	methods: {
 		selectItem(id) {
-			const { users } = this.$store.state.home;
-			const { artists } = this.$store.state.home;
-			const items =
-				this.currentRouteName === USERS_ROUTE ? users : artists;
-			const ItemToEdit = items.find((item) => item.id === id);
 			if (this.currentRouteName === USERS_ROUTE) {
+				const { users } = this.$store.state.home;
+				const ItemToEdit = users.find((item) => item.uid === id);
 				this.$store.commit(SELECT_USER, {
 					user: ItemToEdit,
 					operation: EDIT,
 				});
 			} else if (this.currentRouteName === ARTISTS_ROUTE) {
+				const { artists } = this.$store.state.home;
+				const ItemToEdit = artists.find((item) => item.aid === id);
 				this.$store.commit(SELECT_ARTIST, {
-					user: ItemToEdit,
+					artist: ItemToEdit,
 					operation: EDIT,
 				});
+			} else if (this.currentRouteName === ALBUMS_ROUTE) {
+				const { albums } = this.$store.state.home;
+				const ItemToEdit = albums.find((item) => item.alid === id);
+				console.log(ItemToEdit);
+				// this.$store.commit(SELECT_ARTIST, {
+				// 	artist: ItemToEdit,
+				// 	operation: EDIT,
+				// });
 			}
 		},
 		deleteItem(id) {
-			this.$store.dispatch(DELETE_USER, {
-				uid: id,
-			});
+			if (this.currentRouteName === USERS_ROUTE) {
+				this.$store.dispatch(DELETE_USER, {
+					uid: id,
+				});
+			} else if (this.currentRouteName === ARTISTS_ROUTE) {
+				this.$store.dispatch(DELETE_ARTIST, {
+					aid: id,
+				});
+			}
 		},
 	},
 };
@@ -95,17 +127,22 @@ export default {
 .dataTable {
 	font-family: arial, sans-serif;
 	border-collapse: collapse;
-	width: 100%;
+	width: 700px;
+
+	margin: 10px;
 }
 
 .dataTable td,
 th {
-	border: 1px solid #434cce;
-	text-align: left;
+	border: 2px solid #000000;
+	text-align: center;
+	font-size: 17px;
 	padding: 8px;
+	width: 10%;
+	text-transform: capitalize;
 }
 
 .dataTable tr:nth-child(even) {
-	background-color: #dddddd;
+	background-color: #d2d8d8;
 }
 </style>

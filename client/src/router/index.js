@@ -1,6 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import { ARTISTS_ROUTE, USERS_ROUTE } from "../constants";
+import {
+	ALBUMS_ROUTE,
+	ARTISTS_ROUTE,
+	USERS_ROUTE,
+	USER_RATINGS_ROUTE,
+} from "../constants";
 
 Vue.use(VueRouter);
 
@@ -18,6 +23,16 @@ const routes = [
 				path: "/artists",
 				name: ARTISTS_ROUTE,
 				component: () => import("../views/Artists.vue"),
+			},
+			{
+				path: "/albums",
+				name: ALBUMS_ROUTE,
+				component: () => import("../views/Albums.vue"),
+			},
+			{
+				path: "/users-ratings",
+				name: USER_RATINGS_ROUTE,
+				component: () => import("../views/UserRatings.vue"),
 			},
 		],
 	},

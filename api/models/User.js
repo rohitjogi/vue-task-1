@@ -1,5 +1,15 @@
 var mongoose = require("mongoose");
 
+var UserAlbumRatingSchema = new mongoose.Schema({
+	album: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Album",
+	},
+	rating: {
+		type: Number,
+		default: 0,
+	},
+});
 var UserSchema = new mongoose.Schema(
 	{
 		uid: {
@@ -16,16 +26,18 @@ var UserSchema = new mongoose.Schema(
 			required: [true, "can't be blank"],
 			index: true,
 		},
-		albums: [{ type: mongoose.Schema.Types.ObjectId, ref: "Album" }],
+		ratings: [UserAlbumRatingSchema],
 	},
 	{ timestamps: true }
 );
 
 UserSchema.methods.toJSON = function () {
-	return {
-		uid: this.uid,
-		name: this.name,
-	};
+	return this.toObject();
+	// return {
+	// 	_id: this._id,
+	// 	uid: this.uid,
+	// 	name: this.name,
+	// };
 };
 
 mongoose.model("User", UserSchema, "users");

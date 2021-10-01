@@ -18,8 +18,7 @@ export default {
 				},
 				{ name: "Artists", link: "/artists" },
 				{ name: "Albums", link: "/albums" },
-				{ name: "Users Rating", link: "/users-rating" },
-				{ name: "Albums Rating", link: "/albums-rating" },
+				{ name: "Users Rating", link: "/users-ratings" },
 			],
 		};
 	},
@@ -29,5 +28,14 @@ export default {
 <style>
 ul {
 	list-style: none;
+	text-decoration: none;
+}
+a {
+	list-style: none;
+	text-decoration: none;
+	border-bottom: 2px solid darkblue;
+	font-size: 2rem;
+	font-weight: bold;
+	color: black;
 }
 </style>

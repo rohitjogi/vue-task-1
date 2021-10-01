@@ -23,6 +23,7 @@ var ArtistSchema = new mongoose.Schema(
 
 ArtistSchema.methods.toJSON = function () {
 	return {
+		_id: this._id,
 		aid: this.aid,
 		name: this.name,
 	};

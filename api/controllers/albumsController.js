@@ -1,48 +1,62 @@
-const { pool } = require("../utils/pgconnect");
+const mongoose = require("mongoose");
 const { BadRequest, NotFound } = require("../utils/errors");
+const Album = mongoose.model("Album");
 
 const getalbums = (req, res, next) => {
-	pool.query(
-		"select a.id as id , a2.id as artistid , albumname ,albumart , a2.artistname from albums a join artists a2 on a.artistid =  a2.id  order  by a.id ",
-		(error, results) => {
-			if (error) {
-				next(new BadRequest(error.message));
-			} else {
-				res.status(200).json(results.rows);
-			}
-		}
-	);
+	Album.find({})
+		.populate("artist")
+		.exec()
+		.then(function (data) {
+			res.json({ albums: data });
+		});
 };
 
-const getalbumById = (req, res, next) => {
-	const id = parseInt(req.params.id);
-	pool.query(
-		"SELECT a.id as id , albumname ,albumart ,artistid ,artistname  FROM albums a  join artists a2 on  a.artistid = a2.id where a.id = $1",
-		[id],
-		(error, results) => {
-			if (!results) {
-				next(new NotFound("album not found"));
-			} else {
-				res.status(200).json(results.rows[0]);
-			}
-		}
-	);
+const getalbumById = async (req, res, next) => {
+	const alid = req.params.id;
+	const album = await Album.findOne({ alid: "alid1" });
+	//  (error, data) => {
+	// 	const art = data.art;
+	// 	res.json({
+	// 		data,
+	// 	});
+	// });
+	// Album.findOne({ alid: "alid1" }, (err, data) => {
+	// 	if (err) {
+	// 		res.json({
+	// 			message: err.message,
+	// 		});
+	// 	}
+	// 	res.json({
+	// 		data,
+	// 	});
+	// });
+	// .populate("Artist")
+	// .exec(function (err, album) {
+	// 	if (err) {
+	// 		res.json({
+	// 			message: err.message,
+	// 		});
+	// 		return;
+	// 	}
+	// 	res.json({ album });
+	// });
 };
 
 const createalbum = (req, res, next) => {
-	const { albumname, albumart, artistid } = req.body;
-	pool.query(
-		"INSERT INTO albums(albumname, albumart, artistid) VALUES ($1  , $2 ,$3 ) RETURNING id",
-		[albumname, albumart, artistid],
-		(error, results) => {
-			if (error) {
-				next(new BadRequest(error.message));
-			} else {
-				const uid = results.rows[0].id;
-				res.status(201).json(uid);
-			}
-		}
-	);
+	const { name, albumArt, alid } = req.body.formData;
+	const { _id: artistId } = req.body.artist;
+
+	const album = new Album();
+
+	album.alid = alid;
+	album.name = name;
+	album.albumArt = albumArt;
+	album.artist = artistId;
+
+	album.save().then(function (album) {
+		res.json({ album });
+		// return res.json({ artist: artist.toJSON() });
+	});
 };
 
 const updatealbumname = (req, res, next) => {

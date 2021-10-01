@@ -12,8 +12,18 @@ router.get(
 	asyncHandler((req, res, next) => users.getUserById(req, res, next))
 );
 router.put(
+	"/:id/albums",
+	asyncHandler((req, res, next) => users.updateUserAlbums(req, res, next))
+);
+router.put(
 	"/:id",
 	asyncHandler((req, res, next) => users.updateUser(req, res, next))
+);
+router.put(
+	"/:id/albums/:alid",
+	asyncHandler((req, res, next) =>
+		users.updateUserAlbumRating(req, res, next)
+	)
 );
 router.post(
 	"/",
